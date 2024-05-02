@@ -49,7 +49,8 @@ SET default_table_access_method = heap;
 
 CREATE TABLE public.black_hole (
     black_hole_id integer NOT NULL,
-    name character varying(30)
+    name character varying(30),
+    size_m2 integer NOT NULL
 );
 
 
@@ -120,9 +121,10 @@ ALTER SEQUENCE public.galaxy_galaxy_id_seq OWNED BY public.galaxy.galaxy_id;
 
 CREATE TABLE public.moon (
     moon_id integer NOT NULL,
-    name character varying(30),
     inhabitants integer,
-    weight numeric(10,2)
+    weight numeric(10,2),
+    name character varying(30) NOT NULL,
+    planet_id integer NOT NULL
 );
 
 
@@ -160,7 +162,8 @@ CREATE TABLE public.planet (
     inhabitants integer,
     motto text,
     has_life boolean,
-    galaxy_id integer
+    galaxy_id integer,
+    color character varying(30) NOT NULL
 );
 
 
@@ -281,13 +284,14 @@ INSERT INTO public.galaxy VALUES (5, 'Black Eye', 0, false, false);
 -- Data for Name: moon; Type: TABLE DATA; Schema: public; Owner: freecodecamp
 --
 
+INSERT INTO public.moon VALUES (1, NULL, 77777777.00, 'The Moon', 1);
 
 
 --
 -- Data for Name: planet; Type: TABLE DATA; Schema: public; Owner: freecodecamp
 --
 
-INSERT INTO public.planet VALUES (1, 'Earth', 7, 'We can do it!', true, 1);
+INSERT INTO public.planet VALUES (1, 'Earth', 7, 'We can do it!', true, 1, 'Green');
 
 
 --
@@ -345,11 +349,35 @@ ALTER TABLE ONLY public.black_hole
 
 
 --
+-- Name: black_hole black_hole_size_m2_key; Type: CONSTRAINT; Schema: public; Owner: freecodecamp
+--
+
+ALTER TABLE ONLY public.black_hole
+    ADD CONSTRAINT black_hole_size_m2_key UNIQUE (size_m2);
+
+
+--
+-- Name: galaxy galaxy_galaxy_id_key; Type: CONSTRAINT; Schema: public; Owner: freecodecamp
+--
+
+ALTER TABLE ONLY public.galaxy
+    ADD CONSTRAINT galaxy_galaxy_id_key UNIQUE (galaxy_id);
+
+
+--
 -- Name: galaxy galaxy_pkey; Type: CONSTRAINT; Schema: public; Owner: freecodecamp
 --
 
 ALTER TABLE ONLY public.galaxy
     ADD CONSTRAINT galaxy_pkey PRIMARY KEY (galaxy_id);
+
+
+--
+-- Name: moon moon_moon_id_key; Type: CONSTRAINT; Schema: public; Owner: freecodecamp
+--
+
+ALTER TABLE ONLY public.moon
+    ADD CONSTRAINT moon_moon_id_key UNIQUE (moon_id);
 
 
 --
@@ -390,6 +418,14 @@ ALTER TABLE ONLY public.star
 
 ALTER TABLE ONLY public.star
     ADD CONSTRAINT star_pkey PRIMARY KEY (star_id);
+
+
+--
+-- Name: moon fk_planet_id; Type: FK CONSTRAINT; Schema: public; Owner: freecodecamp
+--
+
+ALTER TABLE ONLY public.moon
+    ADD CONSTRAINT fk_planet_id FOREIGN KEY (planet_id) REFERENCES public.planet(planet_id);
 
 
 --
